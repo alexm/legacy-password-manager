@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Designing a web UI for a legacy password manager</title>
+
+		<meta name="description" content="Designing a web UI for a legacy password manager">
+		<meta name="author" content="Alex Muntada">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+					<section>
+						<h2>Designing a web UI for a legacy password manager</h2>
+						<h4>Barcelona Perl Workshop 2014</h4>
+						<p>by <a href="http://alexm.org/">Alex Muntada</a> / <a href="http://twitter.com/alexmuntada">@alexmuntada</a></p>
+						<p><small><a href="http://creativecommons.org/licenses/by-sa/4.0/deed" title="Attribution-ShareAlike 4.0 International License">cc-by-sa</a></small></p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Meet the legacy system</h2>
+						<pre><code class="plain">
+
+     shellscript       passwd db            passwd
+    +-----------+     +--------------+     +----------+
+    | SP client | <=> | SinglePasswd | <=> | SP agent |
+    +-----------+     +--------------+     +----------+
+
+						</code></pre>
+					</section>
+					<section>
+						<h2>SP authentication</h2>
+						<pre><code class="plain">
+$ passwd
+
+You will be prompted for two different passwords:
+- Your authentication password.
+- Your new password for a service group of your choice.
+
+Enter 'alexm' authentication password:
+Authenticating user 'alexm'... Successful
+						</code></pre>
+					</section>
+					<section>
+						<h2>SP service list</h2>
+						<pre><code class="plain">
+Service group list for user 'alexm':
+[1] Gateway: Access to internal services from outside (home, etc.)
+    - Gateway Account
+    - VPN
+    - ...
+[2] Internal: Intranet, UNIX account, E-mail account, etc.
+    - Authentication
+    - Home Page
+    - Intranet
+    - Mail Account
+    - ...
+[3] Other: CVS repositories, Mailing lists, etc.
+    - Mail List [mhonarc-test]
+    - ...
+
+Enter your choice [1..3, L=list, Q=quit]:
+						</code></pre>
+					</section>
+					<section>
+						<h2>SP password change</h2>
+						<pre><code class="plain">
+Enter your choice [1..3, L=list, Q=quit]: 2
+
+Enter 'alexm' new password for 'Internal' (8 chars):
+Re-enter 'alexm'  password for 'Internal':
+
+Changing 'alexm' passwords for service group 'Internal'
+This may take a long while, please be patient...
+
+Password successfully changed in database
+...
+						</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Adding the web UI</h2>
+						<pre><code class="plain">
+
+     internet        public        internal
+    +---------+     +-------+     +---------+
+    | browser | <=> | nginx | <=> | apache  |
+    +---------+     +-------+     +---------+
+                                       ^
+                                       |
+                                       v
+                                +--------------+
+                                | SinglePasswd |
+                                +--------------+
+                                    ^     ^
+                                    | ... |
+                                    v     v
+                          +----------+   +----------+
+                          | SP agent |   | SP agent |
+                          +----------+   +----------+
+
+						</code></pre>
+					</section>
+					<section>
+						<h2>The web client</h2>
+						<img src="arquitectura.jpg">
+					</section>
+					<section>
+						<h2>Web UI authentication</h2>
+						<img src="web-auth.png">
+					</section>
+					<section>
+						<h2>Web UI service list</h2>
+						<img src="web-service-list.png">
+					</section>
+					<section>
+						<h2>Web UI passord change</h2>
+						<img src="web-success.png">
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Wait, there is more...</h2>
+					</section>
+					<section>
+						<img src="passwd-reset.jpg">
+					</section>
+					<section>
+						<h2>Adding password reset</h2>
+						<img src="oblit.jpg">
+					</section>
+					<section>
+						<h2>More details next time.</h2>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Final thoughts</h2>
+						<ul>
+							<li>Designing an API for legacy software isn't that hard.</li>
+							<li>Adding new features becomes possible instantly.</li>
+							<li>Using APIs you can replace legacy software smoothly.</li>
+							<li>REST APIs are cool and help make cool web UIs.</li>
+							<li>Mojolicious makes this task even cooler!</li>
+						</ul>
+					</section>
+					<section>
+						<h2>¿Questions?</h2>
+						<p>by Alex Muntada / @alexmuntada</p>
+					</section>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
